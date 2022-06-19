@@ -1,0 +1,7 @@
+{
+  "name": "bebelpratas",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

@@ -1,0 +1,28 @@
+<ion-content fullscreen color="primary">
+  <ion-grid>
+    <ion-row class="ion-align-items-center vh-100">
+      <ion-col size="12">
+        <ion-row class="logo-login ion-justify-content-center">
+          <ion-col size="10">
+            <ion-img src="assets/images/logo001.png"></ion-img>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-justify-content-center">
+          <ion-col size="10" class="ion-margin-bottom">
+            <ion-button (click)="loginGoogle()" size="large" color="light" expand="block" shape="round" type="submit" [disabled]="loading">
+              <ion-icon class="ion-margin-horizontal" name="logo-google"></ion-icon> Login
+            </ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="loading" class="ion-justify-content-center">
+          <ion-col size="10">
+            <ion-text color="light" class="ion-text-center">
+              <h4>Carregando...</h4>
+            </ion-text>
+            <ion-progress-bar color="light" type="indeterminate"></ion-progress-bar>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

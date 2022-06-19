@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title><ion-icon name="bag-check-outline"></ion-icon> Compras</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="primary">
+  <ion-card>
+    <ion-grid>
+      <ion-row>
+        <ion-col  class="ion-align-self-center" size="2">
+          <h6>15</h6>
+        </ion-col>
+        <ion-col class="ion-align-self-center" size="10">
+          <ion-text>
+            <ion-row>
+              <ion-col>
+                <span>Nome: Aneis Janeiro</span>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <span><ion-icon name="business-outline"></ion-icon> Tudo Pratas</span>
+              </ion-col>
+              <ion-col>
+                <span><ion-icon name="calendar-number-outline"></ion-icon> 15/08/2022</span>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <span>Total R$ 200.00</span>
+              </ion-col>
+              <ion-col>
+                <span>Itens: 40und</span>
+              </ion-col>
+            </ion-row>
+          </ion-text>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+  <ion-card>
+    <ion-grid>
+      <ion-row>
+        <ion-col  class="ion-align-self-center" size="2">
+          <h6>15</h6>
+        </ion-col>
+        <ion-col class="ion-align-self-center" size="10">
+          <ion-text>
+            <ion-row>
+              <ion-col>
+                <span>Pedido: Aneis</span>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <span>Loja: Tudo Pratas</span>
+              </ion-col>
+              <ion-col>
+                <span><ion-icon name="calendar-number-outline"></ion-icon> 15/08/2022</span>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <span>Total R$ 200.00</span>
+              </ion-col>
+              <ion-col>
+                <span>Itens: 40und</span>
+              </ion-col>
+            </ion-row>
+          </ion-text>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openModal('editor')" color="light">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+

@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      <ion-icon name="bag-check-outline"></ion-icon> Editor de Compra
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="primary">
+  <form [formGroup]="form">
+    <ion-item-group>
+      <ion-item>
+        <ion-label position="floating">Nome: </ion-label>
+        <ion-input formControlName="nome"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Fornecedor</ion-label>
+        <ion-input formControlName="fornecedor"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Quantidade (und)</ion-label>
+        <ion-input formControlName="quantidade" type="number"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Valor de Compra R$</ion-label>
+        <ion-input formControlName="valor_compra" type="number"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Custo com Frete R$</ion-label>
+        <ion-input formControlName="custo_frete" type="number"></ion-input>
+      </ion-item>
+      <ng-container *ngIf="custosControl.length" formArrayName="custo_outros">
+        <ng-container *ngFor="let item of custosControl['controls']; let i = index" [formGroupName]="i">
+          <ion-item>
+            <ion-label position="floating">Descrição {{i+1}}</ion-label>
+            <ion-input formControlName="desc"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Valor {{i+1}}</ion-label>
+            <ion-input formControlName="valor" type="number"></ion-input>
+          </ion-item>
+          <ion-button (click)="removerInput(i)" color="light" shape="round" expand="block">
+            <ion-text color="danger">
+                <span><ion-icon slot="start" name="remove-outline"></ion-icon> Remover</span>
+            </ion-text>
+          </ion-button>
+        </ng-container>
+
+      </ng-container>
+      <ion-button (click)="criarInput()" color="light" shape="round" expand="block">
+        <ion-icon slot="start" name="add-outline"></ion-icon> Adicionar Custo
+      </ion-button>
+    </ion-item-group>
+  </form>
+</ion-content>
+
+<ion-footer collapse="fade">
+    <ion-toolbar>
+        <ion-button [disabled]="!form.valid" (click)="salvar()" color="success" shape="round" expand="block">
+            <ion-icon slot="start" name="save-outline"></ion-icon> Salvar Compra
+          </ion-button>
+    </ion-toolbar>
+  </ion-footer>
