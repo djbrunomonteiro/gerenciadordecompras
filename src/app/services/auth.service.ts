@@ -1,3 +1,6 @@
+import { IUser } from './../models/user';
+import { UserActionTypes } from './../store/user/user.actions';
+import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { Firestore } from '@angular/fire/firestore';
@@ -14,7 +17,8 @@ export class AuthService {
   constructor(
     private afs: Firestore,
     private auth: Auth,
-    private router: Router
+    private router: Router,
+    private store: Store
   ) {
     this.authGet = getAuth();
   }
@@ -25,8 +29,22 @@ export class AuthService {
   }
 
   checkAuthenticated() {
-    authState(this.authGet).subscribe((res) =>
-      res ? (this.isAuthenticated = true) : (this.isAuthenticated = false)
+    authState(this.authGet).subscribe((res: any) => {
+      res ? (this.isAuthenticated = true) : (this.isAuthenticated = false);
+
+      if(this.isAuthenticated){
+        const user: IUser = {
+          id: res.uid,
+          nome: res.displayName,
+          email: res.email,
+          foto: res.photoURL
+        }
+        this.store.dispatch(UserActionTypes.UserSetStore({user}))
+
+      }
+
+    }
+      
     );
   }
 

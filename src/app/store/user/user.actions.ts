@@ -6,6 +6,7 @@ export interface UserState extends EntityState<IUser> {}
 
 export const adapter: EntityAdapter<IUser> = createEntityAdapter<IUser>();
 
+
 export const UserSetStore = createAction (
     '[USER SET STORE] Set User in Store',
     props<{user: IUser}>()
