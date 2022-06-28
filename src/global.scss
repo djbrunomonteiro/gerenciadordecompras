@@ -25,6 +25,14 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
+@import '~swiper/scss';
+@import '~swiper/scss/autoplay';
+@import '~swiper/scss/keyboard';
+@import '~swiper/scss/pagination';
+@import '~swiper/scss/scrollbar';
+@import '~swiper/scss/zoom';
+@import '~@ionic/angular/css/ionic-swiper';
+
 .vh-80{
     height: 80vh;
 }
@@ -35,4 +43,8 @@
 }
 .border-rigth{
     border-right: 2px solid red;
+}
+
+.swiper{
+    width: 100%;
 }

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ComprasEditorComponent } from './compras/compras-editor/compras-editor.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
+import { SwiperModule } from 'swiper/angular';
 
 
 
@@ -15,6 +16,7 @@ import { IonicModule } from '@ionic/angular';
     IonicModule,
     FormsModule,
     ReactiveFormsModule,
+    SwiperModule
   ],
   exports:[
     ComprasEditorComponent,

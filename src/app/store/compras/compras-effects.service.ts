@@ -96,8 +96,10 @@ export class ComprasEffectsService {
       }),
       map((res) => {
         if (this.misc.checkError(res)) {
+          this.misc.presentToast('Não foi possivel salvar item, Tente novamente!')
           return ComprasActionType.CompraError();
         } else {
+          this.misc.presentToast('Item adicionado com sucesso!')
           return ComprasActionType.CompraSuccess();
         }
       })
@@ -125,8 +127,10 @@ export class ComprasEffectsService {
       }),
       map((res) => {
         if (this.misc.checkError(res)) {
+          this.misc.presentToast('Não foi possivel autualizar item, Tente novamente!')
           return ComprasActionType.CompraUpdateError();
         } else {
+          this.misc.presentToast('Item atualizado com sucesso!')
           return ComprasActionType.CompraUpdateSuccess();
         }
       })

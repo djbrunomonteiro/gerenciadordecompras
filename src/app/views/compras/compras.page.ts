@@ -40,17 +40,24 @@ export class ComprasPage implements OnInit {
   async openModal(tipo: string, compra?: any) {
     const modal =  await this.modalController.create({
       component: ComprasEditorComponent,
-      initialBreakpoint: 1,
-      breakpoints: [0, 0.5, 1],
       componentProps: {
         userData: this.userData,
         compra
       },
     });
     modal.onDidDismiss().then((res) => {
-      if (res.data) {
-        this.store.dispatch(ComprasActionType.CompraSet({item: res.data}))
+      switch(res.data){
+        case null || undefined:
+          break;
+        default:
+          if(res.data.id){
+            this.store.dispatch(ComprasActionType.CompraUpdate({id: res.data.id,  changes: res.data}));
+          }else{
+            this.store.dispatch(ComprasActionType.CompraSet({item: res.data}));
+          }
       }
+
+
     });
     return await modal.present();
   }

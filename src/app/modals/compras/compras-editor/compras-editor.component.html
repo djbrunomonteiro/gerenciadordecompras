@@ -1,68 +1,158 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="light">
     <ion-title>
       <ion-icon name="bag-check-outline"></ion-icon> Editor de Compra
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="primary">
+<ion-content color="primary" #ioncontent>
   <form [formGroup]="form">
-    <ion-item-group>
-      <ion-item>
-        <ion-label position="floating">Nome: </ion-label>
-        <ion-input formControlName="nome"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Fornecedor</ion-label>
-        <ion-input formControlName="fornecedor"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Quantidade (und)</ion-label>
-        <ion-input formControlName="quantidade" type="number"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Valor de Compra R$</ion-label>
-        <ion-input formControlName="valor_compra" type="number"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Custo com Frete R$</ion-label>
-        <ion-input formControlName="custo_frete" type="number"></ion-input>
-      </ion-item>
-      <ng-container *ngIf="custosControl.length" formArrayName="custo_outros">
-        <ng-container *ngFor="let item of custosControl['controls']; let i = index" [formGroupName]="i">
-          <ion-item>
-            <ion-label position="floating">Descrição {{i+1}}</ion-label>
-            <ion-input formControlName="desc"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label position="floating">Valor {{i+1}}</ion-label>
-            <ion-input formControlName="valor" type="number"></ion-input>
-          </ion-item>
-          <ion-button (click)="removerInput(i)" color="light" shape="round" expand="block">
-            <ion-text color="danger">
-                <span><ion-icon slot="start" name="remove-outline"></ion-icon> Remover</span>
-            </ion-text>
+    <swiper (swiper)="getSwiper($event)" [keyboard]="false" [pagination]="false" [scrollbar]="false" [zoom]="true"
+      [allowTouchMove]="false">
+      <ng-template swiperSlide>
+        <div class="swiper">
+          <ion-item-group>
+            <ion-item>
+              <ion-label position="floating">Nome: </ion-label>
+              <ion-input formControlName="nome"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Fornecedor</ion-label>
+              <ion-input formControlName="fornecedor"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Data de Compra</ion-label>
+              <ion-datetime formControlName="data" class="ion-margin-top" locale="pt-Br" show-default-title="false">
+              </ion-datetime>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Custo com Frete R$</ion-label>
+              <ion-input  formControlName="custo_frete" type="number"></ion-input>
+            </ion-item>
+            <ng-container *ngIf="custosControl.length" formArrayName="custo_outros">
+              <ng-container *ngFor="let item of custosControl['controls']; let i = index" [formGroupName]="i">
+                <ion-item>
+                  <ion-label position="floating">Descrição {{i+1}}</ion-label>
+                  <ion-input formControlName="desc"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Valor {{i+1}}</ion-label>
+                  <ion-input formControlName="valor" type="number"></ion-input>
+                </ion-item>
+                <ion-button (click)="removerInput('custos', i)" color="light" shape="round" expand="block">
+                  <ion-text color="danger">
+                    <span>
+                      <ion-icon slot="start" name="remove-outline"></ion-icon> Remover
+                    </span>
+                  </ion-text>
+                </ion-button>
+              </ng-container>
+            </ng-container>
+            <ion-button (click)="criarInput('custos')" color="light" shape="round" expand="block">
+              <ion-icon slot="start" name="add-outline"></ion-icon> Adicionar Custo
+            </ion-button>
+          </ion-item-group>
+        </div>
+
+      </ng-template>
+
+      <ng-template swiperSlide>
+        <div class="swiper">
+          <ion-item-group style="width: 100vw;" *ngIf="produtosControl.length" formArrayName="produtos" >
+            <ng-container *ngFor="let item of produtosControl['controls']; let i = index" [formGroupName]="i">
+              <ion-item-divider>
+                <ion-label >Dados Produto {{i+1}} </ion-label>
+              </ion-item-divider>
+              <ion-item class="ion-no-margin">
+                <ion-label position="floating">Nome do Produto: </ion-label>
+                <ion-input formControlName="nome_produto"></ion-input>
+              </ion-item>
+              <ion-item class="ion-no-margin">
+                <ion-label position="floating">Valor de Compra:</ion-label>
+                <ion-input (ionChange)="calcular()" formControlName="valor_compra"></ion-input>
+              </ion-item>
+              <ion-item class="ion-no-margin">
+                <ion-label position="floating">Quantidade</ion-label>
+                <ion-input (ionChange)="calcular()" formControlName="quantidade" type="number"></ion-input>
+              </ion-item>
+              <ion-item class="ion-no-margin">
+                <ion-label position="floating">Porcentagem de Venda:</ion-label>
+                <ion-input (ionChange)="calcular()" formControlName="porcentagem" type="number"></ion-input>
+              </ion-item>
+              <ion-item class="ion-no-margin">
+                <ion-label position="floating">Valor Sugerido de Venda</ion-label>
+                <ion-input readonly formControlName="valor_sugerido" type="number"></ion-input>
+              </ion-item>
+              <ion-item class="ion-no-margin">
+                <ion-label position="floating">Valor de Venda</ion-label>
+                <ion-input formControlName="valor_venda" type="number"></ion-input>
+              </ion-item>
+
+              <ion-button (click)="removerInput('produtos', i)" color="light" shape="round" expand="block">
+                <ion-text color="danger">
+                  <span>
+                    <ion-icon slot="start" name="remove-outline"></ion-icon> Remover
+                  </span>
+                </ion-text>
+              </ion-button>
+
+            </ng-container>
+            
+          </ion-item-group>
+          <ion-button (click)="criarInput('produtos')" color="light" shape="round" expand="full">
+            <ion-icon slot="start" name="add-outline"></ion-icon> Adicionar Produto
           </ion-button>
-        </ng-container>
+        </div>
 
-      </ng-container>
-      <ion-button (click)="criarInput()" color="light" shape="round" expand="block">
-        <ion-icon slot="start" name="add-outline"></ion-icon> Adicionar Custo
-      </ion-button>
-
-      <ion-item>
-        <ion-label position="floating">Data de Compra</ion-label>
-        <ion-datetime formControlName="data" class="ion-margin-top" locale="pt-Br" show-default-title="false"></ion-datetime>
-      </ion-item>
-    </ion-item-group>
+      </ng-template>
+    </swiper>
   </form>
 </ion-content>
+<ion-fab vertical="top" horizontal="end" slot="fixed">
+  <ion-fab-button color="light">
+    <ion-icon name="reader-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
 
 <ion-footer collapse="fade">
-    <ion-toolbar>
-        <ion-button [disabled]="!form.valid" (click)="salvar()" color="success" shape="round" expand="block">
-            <ion-icon slot="start" name="save-outline"></ion-icon> Salvar Compra
+  <ion-toolbar color="secondary">
+    <ion-grid>
+      <ion-row class="ion-justify-content-center">
+        <ion-col size="5" class="ion-text-center">
+          <p>{{sliderAtual + 1}} de {{slidesLength}} passos </p>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="6">
+          <ion-button (click)="controlSwiper('prev')" type="button" [disabled]="sliderAtual === 0" expand="block"
+            color="primary">
+            <ion-icon name="play-back-outline"></ion-icon> Voltar
           </ion-button>
-    </ion-toolbar>
-  </ion-footer>
+        </ion-col>
+        <ion-col size="6">
+          <ion-button *ngIf="sliderAtual !== (slidesLength-1) ; else btnFinalizar " (click)="controlSwiper('next')"
+            [disabled]="!enableBtn()" type="button" expand="block" color="primary">
+            Próximo <ion-icon name="play-forward-outline"></ion-icon>
+          </ion-button>
+          <ng-template #btnFinalizar>
+            <ion-button (click)="alertConfirm()" type="button" expand="block" color="primary" [disabled]="!enableBtn()">
+              Finalizar <ion-icon name="play-forward-outline"></ion-icon>
+            </ion-button>
+          </ng-template>
+        </ion-col>
+
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>
+
+
+<!-- <ion-footer collapse="fade">
+  <ion-toolbar>
+    <ion-button [disabled]="!form.valid" (click)="salvar()" color="success" shape="round" expand="block">
+      <ion-icon slot="start" name="save-outline"></ion-icon> Salvar Compra
+    </ion-button>
+  </ion-toolbar>
+</ion-footer> -->
