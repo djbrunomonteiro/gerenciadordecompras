@@ -88,6 +88,12 @@
                 <ion-label position="floating">Valor de Venda</ion-label>
                 <ion-input formControlName="valor_venda" type="number"></ion-input>
               </ion-item>
+              <ion-item class="ion-no-margin">
+                <ion-input type="file" (ionChange)="teste($event)"></ion-input>
+              </ion-item>
+              <ion-button (click)="uploadFotos()"  color="light" shape="round" expand="block">
+                <ion-icon slot="start" name="images-outline"></ion-icon> ADICIONAR FOTOS
+              </ion-button>
 
               <ion-button (click)="removerInput('produtos', i)" color="light" shape="round" expand="block">
                 <ion-text color="danger">

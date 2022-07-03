@@ -16,11 +16,12 @@ import { SwiperModule } from 'swiper/angular';
     IonicModule,
     FormsModule,
     ReactiveFormsModule,
-    SwiperModule
+    SwiperModule,
   ],
   exports:[
     ComprasEditorComponent,
-  ]
+  ],
+  providers: []
 })
 export class ModalsModule {
   static forRoot() {

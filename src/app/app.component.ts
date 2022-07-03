@@ -8,11 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
   constructor(
-    private auth: AuthService
+    public auth: AuthService
   ) {}
 
   ngOnInit(): void {
-    this.auth.checkAuthenticated()
+    this.auth.checkAuthenticated();
   }
 
 

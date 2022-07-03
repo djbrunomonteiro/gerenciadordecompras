@@ -1,3 +1,4 @@
+import { UploadsService } from './../../../services/uploads.service';
 import { element } from 'protractor';
 import { ICompra } from 'src/app/models/compra';
 import { IUser } from './../../../models/user';
@@ -6,6 +7,8 @@ import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/cor
 import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
 import { selectUser } from 'src/app/store/app-selectors';
+import { Camera } from '@capacitor/camera';
+import { randomInt } from 'crypto';
 
 @Component({
   selector: 'app-compras-editor',
@@ -34,14 +37,15 @@ export class ComprasEditorComponent implements OnInit, AfterViewInit {
   produtosControl = this.form.get('produtos') as FormArray;
 
   sliderAtual = 0;
-  slidesLength = 0;
+  slidesLength = 2;
   slides: any;
 
 
   constructor(
     private formBuilder:  FormBuilder,
     public modalController: ModalController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private uploadsService: UploadsService
     
   ) { }
 
@@ -281,6 +285,47 @@ export class ComprasEditorComponent implements OnInit, AfterViewInit {
     }
 
     return result;
+  }
+
+  teste(event: any){
+    console.log(event);
+    
+  }
+
+  async checkCamera() {
+    const camera = await Camera.checkPermissions();
+    if (camera.photos === 'granted') {
+      return;
+    } else {
+      return false;
+
+    }
+  }
+
+  async uploadFotos() {
+
+    if (this.checkCamera()) {
+      const images = await Camera.pickImages({ quality: 50, width: 500 });
+      switch (images.photos.length) {
+        case 0:
+          break;
+        default:
+          images.photos.forEach((elem) => {
+            const nome = 'teste' + '-'+ String(new Date().getMilliseconds());
+            console.log(elem);
+            
+            this.uploadsService.uploadImagem(elem.webPath, 'produtos', nome )
+            .then((res)=>{
+              console.log(res);
+              
+            }).catch(err => console.error(err));
+          });
+          break;
+      }
+
+    } else {
+      const check = await Camera.requestPermissions();
+    }
   }
 
 

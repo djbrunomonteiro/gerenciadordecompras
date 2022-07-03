@@ -4,6 +4,8 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { UserActionTypes } from 'src/app/store/user/user.actions';
 import { IUser } from 'src/app/models/user';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+import { isPlatform } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -18,25 +20,31 @@ export class LoginPage implements OnInit {
     public authService: AuthService,
     private router: Router,
     private store: Store
-  ) { }
+  ) {
+    if(!isPlatform('capacitor')){
+      GoogleAuth.initialize()
+
+    }
+   }
 
   ngOnInit() {
   }
 
   loginGoogle() {
+    this.authService.signIn();
 
-    this.authService.loginGoogle().then((res: any) => {
-        if (!res.uid) {return;}
-        const data: IUser = {
-          id: res.uid,
-          nome: res.displayName,
-          email: res.email,
-          foto: res.photoURL
-        }
-        this.store.dispatch(UserActionTypes.UserSetData({user: data}));
-        this.router.navigate(['/'])
-      })
-      .catch(err => console.error(err))
+    // this.authService.loginGoogle().then((res: any) => {
+    //     if (!res.uid) {return;}
+    //     const data: IUser = {
+    //       id: res.uid,
+    //       nome: res.displayName,
+    //       email: res.email,
+    //       foto: res.photoURL
+    //     }
+    //     this.store.dispatch(UserActionTypes.UserSetData({user: data}));
+    //     this.router.navigate(['/'])
+    //   })
+    //   .catch(err => console.error(err))
 
   }
 

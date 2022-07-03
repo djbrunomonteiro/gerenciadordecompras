@@ -6,6 +6,8 @@ import { Injectable } from '@angular/core';
 import { Firestore } from '@angular/fire/firestore';
 import { Auth, authState } from '@angular/fire/auth';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+import { isPlatform } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +15,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 export class AuthService {
   authGet: any;
   isAuthenticated: boolean = false;
+  user = null
 
   constructor(
     private afs: Firestore,
@@ -21,6 +24,10 @@ export class AuthService {
     private store: Store
   ) {
     this.authGet = getAuth();
+    if(!isPlatform('capacitor')){
+      GoogleAuth.initialize()
+
+    }
   }
 
   logOut() {
@@ -29,23 +36,27 @@ export class AuthService {
   }
 
   checkAuthenticated() {
-    authState(this.authGet).subscribe((res: any) => {
-      res ? (this.isAuthenticated = true) : (this.isAuthenticated = false);
+    return this.isAuthenticated;
+  }
 
-      if(this.isAuthenticated){
-        const user: IUser = {
-          id: res.uid,
-          nome: res.displayName,
-          email: res.email,
-          foto: res.photoURL
-        }
-        this.store.dispatch(UserActionTypes.UserSetStore({user}))
-
+  async signIn(){
+    this.user = await GoogleAuth.signIn();
+    console.log(this.user);
+    
+    if(this.user){
+      const user: IUser = {
+        id: this.user.id,
+        nome:this.user.displayName,
+        email: this.user.email,
+        foto: this.user.imageUrl
       }
-
+      this.store.dispatch(UserActionTypes.UserSetStore({user}));
+      this.isAuthenticated = true
+      this.checkAuthenticated();
+      this.router.navigate(['/'])
     }
-      
-    );
+    // console.log('user: ', this.user);
+    
   }
 
   loginGoogle(): Promise<any> {
