@@ -14,7 +14,7 @@
         <div class="swiper">
           <ion-item-group>
             <ion-item>
-              <ion-label position="floating">Nome: </ion-label>
+              <ion-label position="floating">Coleção Nome: </ion-label>
               <ion-input formControlName="nome"></ion-input>
             </ion-item>
             <ion-item>
@@ -28,7 +28,7 @@
             </ion-item>
             <ion-item>
               <ion-label position="floating">Custo com Frete R$</ion-label>
-              <ion-input  formControlName="custo_frete" type="number"></ion-input>
+              <ion-input formControlName="custo_frete" type="number"></ion-input>
             </ion-item>
             <ng-container *ngIf="custosControl.length" formArrayName="custo_outros">
               <ng-container *ngFor="let item of custosControl['controls']; let i = index" [formGroupName]="i">
@@ -59,10 +59,10 @@
 
       <ng-template swiperSlide>
         <div class="swiper">
-          <ion-item-group style="width: 100vw;" *ngIf="produtosControl.length" formArrayName="produtos" >
+          <ion-item-group style="width: 100vw;" *ngIf="produtosControl.length" formArrayName="produtos">
             <ng-container *ngFor="let item of produtosControl['controls']; let i = index" [formGroupName]="i">
               <ion-item-divider>
-                <ion-label >Dados Produto {{i+1}} </ion-label>
+                <ion-label>Dados Produto {{i+1}} </ion-label>
               </ion-item-divider>
               <ion-item class="ion-no-margin">
                 <ion-label position="floating">Nome do Produto: </ion-label>
@@ -70,7 +70,7 @@
               </ion-item>
               <ion-item class="ion-no-margin">
                 <ion-label position="floating">Valor de Compra:</ion-label>
-                <ion-input (ionChange)="calcular()" formControlName="valor_compra"></ion-input>
+                <ion-input (ionChange)="calcular()" formControlName="valor_compra" type="number"></ion-input>
               </ion-item>
               <ion-item class="ion-no-margin">
                 <ion-label position="floating">Quantidade</ion-label>
@@ -89,9 +89,23 @@
                 <ion-input formControlName="valor_venda" type="number"></ion-input>
               </ion-item>
               <ion-item class="ion-no-margin">
-                <ion-input type="file" (ionChange)="teste($event)"></ion-input>
+                <ion-label position="floating">Descrição</ion-label>
+                <ion-textarea formControlName="descricao" rows="3"  placeholder="Informe a descrição..."></ion-textarea>
               </ion-item>
-              <ion-button (click)="uploadFotos()"  color="light" shape="round" expand="block">
+              <ion-item class="ion-no-margin" *ngIf="form.value?.produtos[i]?.fotos.length">
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size="3" *ngFor="let foto of form.value?.produtos[i]?.fotos">
+                      <img style="height: 100px; width: 100%" [src]="foto">
+                      <ion-button (click)="uploadFotos(i)" color="danger" shape="round" expand="block">
+                        <ion-icon slot="start" name="images-outline"></ion-icon> Deletar
+                      </ion-button>
+
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-item>
+              <ion-button (click)="uploadFotos(i)" color="light" shape="round" expand="block">
                 <ion-icon slot="start" name="images-outline"></ion-icon> ADICIONAR FOTOS
               </ion-button>
 
@@ -104,7 +118,7 @@
               </ion-button>
 
             </ng-container>
-            
+
           </ion-item-group>
           <ion-button (click)="criarInput('produtos')" color="light" shape="round" expand="full">
             <ion-icon slot="start" name="add-outline"></ion-icon> Adicionar Produto
@@ -132,19 +146,24 @@
 
       <ion-row>
         <ion-col size="6">
-          <ion-button (click)="controlSwiper('prev')" type="button" [disabled]="sliderAtual === 0" expand="block"
-            color="primary">
+          <ion-button (click)="controlSwiper('prev')" type="button" *ngIf="sliderAtual !== 0; else btnCancelar"
+            expand="block" color="primary">
             <ion-icon name="play-back-outline"></ion-icon> Voltar
           </ion-button>
+          <ng-template #btnCancelar>
+            <ion-button (click)="modalController.dismiss()" type="button" expand="block" color="danger">
+              Cancelar <ion-icon name="close-outline" slot="end"></ion-icon>
+            </ion-button>
+          </ng-template>
         </ion-col>
         <ion-col size="6">
           <ion-button *ngIf="sliderAtual !== (slidesLength-1) ; else btnFinalizar " (click)="controlSwiper('next')"
             [disabled]="!enableBtn()" type="button" expand="block" color="primary">
-            Próximo <ion-icon name="play-forward-outline"></ion-icon>
+            Próximo <ion-icon name="play-forward-outline" slot="end"></ion-icon>
           </ion-button>
           <ng-template #btnFinalizar>
             <ion-button (click)="alertConfirm()" type="button" expand="block" color="primary" [disabled]="!enableBtn()">
-              Finalizar <ion-icon name="play-forward-outline"></ion-icon>
+              Finalizar <ion-icon name="play-forward-outline" slot="end"></ion-icon>
             </ion-button>
           </ng-template>
         </ion-col>

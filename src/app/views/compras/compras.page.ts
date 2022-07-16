@@ -1,9 +1,10 @@
+import { AuthService } from 'src/app/services/auth.service';
 import { MiscService } from 'src/app/services/misc.service';
 import { ICompra } from './../../models/compra';
 import { IUser } from './../../models/user';
 import { Store } from '@ngrx/store';
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, ViewWillEnter } from '@ionic/angular';
 import { ComprasEditorComponent } from 'src/app/modals/compras/compras-editor/compras-editor.component';
 import { ComprasActionType } from 'src/app/store/compras/compras.actions';
 import { selectCompras, selectUser } from 'src/app/store/app-selectors';
@@ -13,21 +14,34 @@ import { selectCompras, selectUser } from 'src/app/store/app-selectors';
   templateUrl: './compras.page.html',
   styleUrls: ['./compras.page.scss'],
 })
-export class ComprasPage implements OnInit {
+export class ComprasPage implements OnInit, ViewWillEnter {
 
   userData: IUser;
   compras: ICompra[] = [];
+  
   constructor(
     public modalController: ModalController,
     private store: Store,
-    public misc: MiscService
+    public misc: MiscService,
+    public auth: AuthService
     ) {}
+
 
   ngOnInit() {
     this.store.select(selectUser).subscribe((res: IUser)=>{
-      this.userData = res;
+      this.userData = res;      
     });
     this.getCompras();
+    
+  }
+
+  ionViewWillEnter(): void {
+    if(!this.compras){
+      this.store.select(selectCompras).subscribe((res: ICompra[])=>{this.compras = res;})
+      console.log(`vazio`);
+      
+    }
+    
   }
 
   getCompras(){

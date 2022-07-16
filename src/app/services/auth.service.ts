@@ -3,11 +3,12 @@ import { UserActionTypes } from './../store/user/user.actions';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { Firestore } from '@angular/fire/firestore';
-import { Auth, authState } from '@angular/fire/auth';
+import { Auth } from '@angular/fire/auth';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { isPlatform } from '@ionic/angular';
+import { Storage } from '@capacitor/storage';
+import { logoutAction } from '../store/logout/logout.actions';
 
 @Injectable({
   providedIn: 'root',
@@ -18,10 +19,10 @@ export class AuthService {
   user = null
 
   constructor(
-    private afs: Firestore,
     private auth: Auth,
     private router: Router,
-    private store: Store
+    private store: Store,
+    
   ) {
     this.authGet = getAuth();
     if(!isPlatform('capacitor')){
@@ -30,19 +31,38 @@ export class AuthService {
     }
   }
 
-  logOut() {
-    this.auth.signOut();
-    this.router.navigate(['/login']);
+  async checkAuthenticated() {
+    new Promise(async (resolve)=>{
+      await Storage.get({ key: 'accessToken' }).then((res)=>{
+        console.log('acessToken', res);
+        
+        if(res?.value){
+          resolve(this.isAuthenticated = true);
+          this.getUser()
+        }else{
+          resolve(this.isAuthenticated = false) 
+        }
+      });
+    });
   }
 
-  checkAuthenticated() {
-    return this.isAuthenticated;
+  async getUser(){
+    await Storage.get({ key: 'idUser' }).then((res: any)=>{
+      console.log('idUser', res);
+      if(!res.value){return};
+      this.store.dispatch(UserActionTypes.UserGet({id: res.value}))
+    })
   }
 
   async signIn(){
     this.user = await GoogleAuth.signIn();
+    const credential = GoogleAuthProvider.credential(this.user.idToken, this.user.authentication.accessToken);
+    console.log(credential);
+    this.auth.onAuthStateChanged(res => console.log(res))
+
     console.log(this.user);
     
+
     if(this.user){
       const user: IUser = {
         id: this.user.id,
@@ -50,12 +70,22 @@ export class AuthService {
         email: this.user.email,
         foto: this.user.imageUrl
       }
-      this.store.dispatch(UserActionTypes.UserSetStore({user}));
-      this.isAuthenticated = true
-      this.checkAuthenticated();
+      this.store.dispatch(UserActionTypes.UserSetData({user}));
+      this.isAuthenticated = true;
+      await Storage.set({key: 'accessToken', value: this.user?.authentication?.accessToken});
+      await Storage.set({key: 'idUser', value: this.user?.id});
+
       this.router.navigate(['/'])
+
     }
-    // console.log('user: ', this.user);
+  }
+
+  async logOut() {
+    await GoogleAuth.signOut()
+    await Storage.clear();
+    this.router.navigate(['/login']);
+    this.store.dispatch(logoutAction());
+
     
   }
 

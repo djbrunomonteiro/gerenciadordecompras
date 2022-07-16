@@ -1,0 +1,56 @@
+<ion-toolbar color="secondary">
+  <ion-buttons slot="start">
+    <ion-menu-button auto-hide="false"></ion-menu-button>
+  </ion-buttons>
+  <ion-buttons slot="primary">
+    <ion-button (click)="auth.logOut()">
+      <ion-icon slot="icon-only" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+
+  <ion-title class="ion-text-center">
+    <ion-icon name="heart-outline"></ion-icon> Paula Fabiana
+  </ion-title>
+</ion-toolbar>
+
+<ion-menu side="start" menuId="menu" contentId="main" class="my-custom-menu">
+  <ion-header>
+    <ion-toolbar color="secondary">
+      <ion-title>Menu</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-list>
+      <ion-item (click)="alertConfirm()"> Fazer Logout</ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-router-outlet id="main"></ion-router-outlet>
+
+<ion-content>
+  <router-outlet></router-outlet>
+  <ion-tabs>
+    <ion-tab-bar slot="bottom">
+      <ion-tab-button tab="home">
+        <ion-icon name="triangle"></ion-icon>
+        <ion-label>Home</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button tab="produtos">
+        <ion-icon name="ellipse"></ion-icon>
+        <ion-label>Produtos</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button tab="vendas">
+        <ion-icon name="square"></ion-icon>
+        <ion-label>Vendas</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button tab="compras">
+        <ion-icon name="square"></ion-icon>
+        <ion-label>Compras</ion-label>
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
+</ion-content>

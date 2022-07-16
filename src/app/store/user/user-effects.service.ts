@@ -23,7 +23,11 @@ export class UserEffectsService {
     switchMap((action) => {
       return this.userService.getUser(action.id).pipe(
         map((res: IUser) => {
+          console.log(action.id);
+          
+          console.log(res);
           if(res){
+            
             this.store.dispatch(UserActionTypes.UserSetStore({user: res}))
           }
         }),
@@ -42,8 +46,12 @@ export class UserEffectsService {
   this.actions$.pipe(
     ofType(UserActionTypes.UserSetData),
     switchMap((action) => {
+      console.log(action.user);
+      
       return this.userService.addUser(action.user)
-        .then(()=>{
+        .then((res)=>{
+          console.log(res);
+          
           this.store.dispatch(UserActionTypes.UserGet({id: action.user.id }))    
         })
         .catch((err)=>{
@@ -51,7 +59,8 @@ export class UserEffectsService {
           UserActionTypes.UserError();
           return err
         })
-    })
+    }),
+    map(() => UserActionTypes.UserSuccess())
   )
 );
 

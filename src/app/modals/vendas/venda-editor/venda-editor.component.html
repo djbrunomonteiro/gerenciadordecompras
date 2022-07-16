@@ -1,0 +1,192 @@
+<ion-header>
+  <ion-toolbar color="light">
+    <ion-title>
+      <ion-icon name="bag-check-outline"></ion-icon> Editor de Venda
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="primary" #ioncontent>
+  <form [formGroup]="form">
+    <swiper (swiper)="getSwiper($event)" [keyboard]="false" [pagination]="false" [scrollbar]="false" [zoom]="true"
+      [allowTouchMove]="false">
+      <ng-template swiperSlide>
+        <div class="swiper">
+          <ng-container *ngIf="clientes.length">
+            <ion-item-group *ngIf="let cliente of clientes">
+              <ion-item>
+                <ion-label position="floating">Cliente Cadastrado ? </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-select interface="action-sheet" placeholder="selecionar">
+                  <ion-select-option value="apples">Apples</ion-select-option>
+                  <ion-select-option value="oranges">Oranges</ion-select-option>
+                  <ion-select-option value="bananas">Bananas</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-item-group>
+          </ng-container>
+
+          <ion-item-group>
+            <ng-container formGroupName="dados_cliente">
+              <ion-item>
+                <ion-label position="floating">Nome do Cliente: </ion-label>
+                <ion-input formControlName="nome"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">WhatsApp</ion-label>
+                <ion-input formControlName="whats" type="number"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">Telefone</ion-label>
+                <ion-input formControlName="tel" type="number"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">Email</ion-label>
+                <ion-input formControlName="email" type="text"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">Instagram</ion-label>
+                <ion-input formControlName="instagram" type="text"></ion-input>
+              </ion-item>
+              <ng-container formGroupName="endereco">
+                <ion-item>
+                  <ion-label position="floating">Cep</ion-label>
+                  <ion-input formControlName="cep" type="number"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Rua/Avenida</ion-label>
+                  <ion-input formControlName="logradouro" type="text"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Numero</ion-label>
+                  <ion-input formControlName="numero" type="number"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Bairro</ion-label>
+                  <ion-input formControlName="bairro" type="text"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Cidade</ion-label>
+                  <ion-input formControlName="cidade" type="text"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Estado</ion-label>
+                  <ion-input formControlName="uf" type="text"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Complemento</ion-label>
+                  <ion-input formControlName="complemento" type="text"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Referência</ion-label>
+                  <ion-input formControlName="referencia" type="text"></ion-input>
+                </ion-item>
+
+              </ng-container>
+
+            </ng-container>
+            <ion-item>
+              <ion-label position="floating">Data de Compra</ion-label>
+              <ion-datetime formControlName="data" class="ion-margin-top" locale="pt-Br" show-default-title="false">
+              </ion-datetime>
+            </ion-item>
+          </ion-item-group>
+        </div>
+      </ng-template>
+
+      <ng-template swiperSlide>
+        <div class="swiper">
+          <ng-container *ngIf="controlVendas.length" formArrayName="dados_venda">
+            <ion-card *ngFor="let item of controlVendas['controls']; let i = index" [formGroupName]="i">
+              <ion-card-content>
+                <ion-item-group>
+                  <ion-item>
+                    <ion-label position="floating">Produto </ion-label>
+                    <ion-select formControlName="id_produto" interface="popover" placeholder="Selecione o produto">
+                      <ion-select-option *ngFor="let produto of produtos" [value]="produto.id_produto">
+                        {{produto.nome_produto}}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="floating">Quantidade</ion-label>
+                    <ion-input formControlName="quantidade" type="number"></ion-input>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="floating">Valor Unidade</ion-label>
+                    <ion-input formControlName="valor_und" [value]="getValorProduto(item.value?.id_produto)"
+                      type="number"></ion-input>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="floating">Valor Total</ion-label>
+                    <ion-input readonly formControlName="valor_total"
+                      [value]="item.value.quantidade * item.value.valor_und" type="text"></ion-input>
+                  </ion-item>
+                </ion-item-group>
+              </ion-card-content>
+            </ion-card>
+          </ng-container>
+
+          <ion-item-group>
+            <ion-button (click)="criarInput('produtos')" color="light" shape="round" expand="block">
+              <ion-icon slot="start" name="add-outline"></ion-icon> Adicionar Produto
+            </ion-button>
+          </ion-item-group>
+        </div>
+      </ng-template>
+
+    </swiper>
+  </form>
+</ion-content>
+<ion-fab vertical="top" horizontal="end" slot="fixed">
+  <ion-fab-button color="light">
+    <ion-icon name="reader-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+
+<ion-footer collapse="fade">
+  <ion-toolbar color="secondary">
+    <ion-grid>
+      <ion-row class="ion-justify-content-center">
+        <ion-col size="5" class="ion-text-center">
+          <p>{{sliderAtual + 1}} de {{slidesLength}} passos </p>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="6">
+          <ion-button (click)="controlSwiper('prev')" type="button" *ngIf="sliderAtual !== 0; else btnCancelar"
+            expand="block" color="primary">
+            <ion-icon name="play-back-outline"></ion-icon> Voltar
+          </ion-button>
+          <ng-template #btnCancelar>
+            <ion-button (click)="modalController.dismiss()" type="button" expand="block" color="danger">
+              Cancelar <ion-icon name="close-outline" slot="end"></ion-icon>
+            </ion-button>
+          </ng-template>
+        </ion-col>
+        <ion-col size="6">
+          <ion-button *ngIf="sliderAtual !== (slidesLength-1) ; else btnFinalizar " (click)="controlSwiper('next')"
+            type="button" expand="block" color="primary">
+            Próximo <ion-icon name="play-forward-outline" slot="end"></ion-icon>
+          </ion-button>
+          <ng-template #btnFinalizar>
+            <ion-button (click)="salvarCliente(); salvarVenda()" type="button" expand="block" color="primary">
+              Finalizar <ion-icon name="play-forward-outline" slot="end"></ion-icon>
+            </ion-button>
+          </ng-template>
+        </ion-col>
+
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>
+
+
+<!-- <ion-footer collapse="fade">
+    <ion-toolbar>
+      <ion-button [disabled]="!form.valid" (click)="salvar()" color="success" shape="round" expand="block">
+        <ion-icon slot="start" name="save-outline"></ion-icon> Salvar Compra
+      </ion-button>
+    </ion-toolbar>
+  </ion-footer> -->

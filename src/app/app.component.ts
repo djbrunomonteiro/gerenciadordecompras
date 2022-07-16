@@ -1,5 +1,7 @@
+import { Store } from '@ngrx/store';
 import { AuthService } from 'src/app/services/auth.service';
 import { Component, OnInit } from '@angular/core';
+import { UserActionTypes } from './store/user/user.actions';
 
 @Component({
   selector: 'app-root',
@@ -8,11 +10,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
   constructor(
-    public auth: AuthService
+    public auth: AuthService,
   ) {}
 
   ngOnInit(): void {
     this.auth.checkAuthenticated();
+    
   }
 
 
