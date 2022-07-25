@@ -1,5 +1,6 @@
 export interface ICliente {
     id?: string,
+    id_ref?: string,
     nome?: string,
     whats?: string,
     tel?: string,

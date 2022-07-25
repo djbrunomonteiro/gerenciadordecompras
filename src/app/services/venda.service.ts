@@ -21,7 +21,6 @@ export class VendaService {
   async addOne(item: any) {
     const vendaRef = collection(this.afs, 'vendas');
     const docRef = addDoc(vendaRef, item);
-    console.log('cliente,', item);
     return (await docRef).id;
   }
 

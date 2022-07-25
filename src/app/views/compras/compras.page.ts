@@ -18,6 +18,7 @@ export class ComprasPage implements OnInit, ViewWillEnter {
 
   userData: IUser;
   compras: ICompra[] = [];
+  loading = false;
   
   constructor(
     public modalController: ModalController,
@@ -28,26 +29,27 @@ export class ComprasPage implements OnInit, ViewWillEnter {
 
 
   ngOnInit() {
-    this.store.select(selectUser).subscribe((res: IUser)=>{
-      this.userData = res;      
-    });
-    this.getCompras();
-    
+    this.getDados();
   }
 
   ionViewWillEnter(): void {
     if(!this.compras){
-      this.store.select(selectCompras).subscribe((res: ICompra[])=>{this.compras = res;})
-      console.log(`vazio`);
-      
+      this.getDados();
     }
-    
+  }
+
+  getDados(){
+    this.loading = true;
+    this.store.select(selectUser).subscribe((res: IUser)=>{this.userData = res;});
+    this.getCompras();
+
   }
 
   getCompras(){
     this.store.dispatch(ComprasActionType.ComprasGet());
     this.store.select(selectCompras).subscribe((res: ICompra[])=>{
       this.compras = res;
+      this.loading = false;
     })
   }
 

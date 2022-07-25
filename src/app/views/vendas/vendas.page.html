@@ -1,61 +1,73 @@
 <ion-header>
   <ion-toolbar color="light">
-    <ion-title><ion-icon name="bag-check-outline"></ion-icon> Vendas</ion-title>
+    <ion-title>
+      <ion-icon name="bag-check-outline"></ion-icon> Vendas
+    </ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="getDados()">
+        <ion-icon slot="icon-only" name="reload-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content color="primary">
-  <ng-container *ngIf="vendas.length; else templateDefault">
-    <ion-card *ngFor="let item of vendas; let i = index" (click)="openModal('editor', item)">
-      <ion-grid>
-        <ion-row>
-          <ion-col  class="ion-align-self-center" size="1">
-            <h6>{{i+1}}</h6>
-          </ion-col>
-          <ion-col class="ion-align-self-center" size="10">
-            <ion-text>
-              <ion-row>
-                <ion-col>
-                  <ion-item class="ion-no-padding">
-                    <ion-label class="ion-wrap">Coleção: </ion-label>
-                  </ion-item>
-                </ion-col>
-              </ion-row>
-              <ion-row>
-                <ion-col>
-                  <ion-item class="ion-no-padding">
-                    <ion-label><ion-icon name="business-outline"></ion-icon> </ion-label>
-                    <ion-label> <ion-icon name="calendar-number-outline"></ion-icon>  {{misc.formataDataBr(item?.dados_venda?.data)}}</ion-label>
-                  </ion-item>
-                </ion-col>
-              </ion-row>
-              <ion-row>
-                <ion-col>
-                  <span>Total </span>
-                </ion-col>
-                <ion-col>
-                  <span>Itens: </span>
-                </ion-col>
-              </ion-row>
-            </ion-text>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-card>
+  <ng-container [ngSwitch]="loading">
+    <ng-container *ngSwitchCase="true">
+      <ion-text class="ion-text-center">
+        <p>Carregando dados...</p>
+      </ion-text>
+      <ion-progress-bar color="light" type="indeterminate"></ion-progress-bar>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+      <ng-container *ngIf="vendas.length; else templateDefault">
+        <ion-card *ngFor="let item of vendas; let i = index" (click)="openModal(item)">
+          <ion-grid>
+            <ion-row>
+              <ion-col class="ion-align-self-center" size="12">
+                <ion-text>
+                  <ion-row>
+                    <ion-col>
+                      <ion-item class="ion-no-padding">
+                        <ion-label class="ion-wrap ion-text-uppercase">
+                          <ion-icon name="person-outline"></ion-icon> {{item?.dados_cliente?.nome}}
+                        </ion-label>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <span>
+                        <ion-icon name="calendar-number-outline"></ion-icon> {{misc.formataDataBr(item?.data)}}
+                      </span>
+                    </ion-col>
+                    <ion-col>
+                      <span>Total: {{getTotal(item) | currency:'BRL'}} </span>
+                    </ion-col>
+                    <ion-col>
+                      <span>Itens: {{getQtdItens(item)}} und.</span>
+                    </ion-col>
+                  </ion-row>
+                </ion-text>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card>
+      </ng-container>
+      <ng-template #templateDefault>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <h3>*Não foi encontrado itens registrados</h3>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ng-template>
+    </ng-container>
   </ng-container>
-  <ng-template #templateDefault>
-    <ion-grid>
-      <ion-row>
-        <ion-col>
-          <h3>*Não foi encontrado itens registrados</h3>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ng-template>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="openModal('editor')" color="light">
+    <ion-fab-button (click)="openModal()" color="light">
       <ion-icon name="add-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>
-

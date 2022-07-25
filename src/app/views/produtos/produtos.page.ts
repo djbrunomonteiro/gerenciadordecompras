@@ -1,18 +1,19 @@
 import { ProdutoViewComponent } from './../../modals/produto/produto-view.component';
 import { IProduto } from './../../models/produto';
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, ViewWillEnter } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { AuthService } from 'src/app/services/auth.service';
 import { MiscService } from 'src/app/services/misc.service';
 import { selectProdutos } from 'src/app/store/app-selectors';
+import { ComprasActionType } from 'src/app/store/compras/compras.actions';
 
 @Component({
   selector: 'app-produtos',
   templateUrl: './produtos.page.html',
   styleUrls: ['./produtos.page.scss'],
 })
-export class ProdutosPage implements OnInit {
+export class ProdutosPage implements OnInit, ViewWillEnter {
 
   produtos = [];
 
@@ -25,20 +26,25 @@ export class ProdutosPage implements OnInit {
     public auth: AuthService
   ) { }
 
+
   ngOnInit() {
     this.getProdutos();
+  }
+
+  ionViewWillEnter(): void {
+    if(!this.produtos.length){
+      this.getProdutos();
+    }
   }
 
   getProdutos(){
     this.loading = true;
     this.produtos = [];
+    this.store.dispatch(ComprasActionType.ComprasGet());
     this.store.select(selectProdutos).subscribe((res: IProduto[])=>{
       this.produtos = res;
-      console.log(this.produtos);
-    })
-    setTimeout(()=>{
       this.loading = false;
-    },1000)
+    })
   }
 
   async openModal(produto: IProduto) {

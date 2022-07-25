@@ -29,6 +29,8 @@ export class ClientesEffectsService {
       switchMap(() =>
         this.clientesService.getAll().pipe(
           map((res: ICliente[]) => {
+            console.log(res);
+            
             this.store.dispatch(ClientesActionType.ClientesSet({ itens: res }));
             return res;
           }),
@@ -51,8 +53,10 @@ export class ClientesEffectsService {
   getOne = createEffect(() =>
     this.actions$.pipe(
       ofType(ClientesActionType.ClienteGet),
-      switchMap((action) =>
-        this.clientesService.getOne(action.id).pipe(
+      switchMap((action) => {
+        console.log(action);
+        
+        return this.clientesService.getOne(action.id).pipe(
           map((res: any) => {
             this.store.dispatch(
               ClientesActionType.ClienteSetStore({ item: res })
@@ -66,6 +70,8 @@ export class ClientesEffectsService {
             });
           })
         )
+
+      }
       ),
       map((res) => {
         if (this.misc.checkError(res)) {

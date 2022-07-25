@@ -12,23 +12,22 @@
       [allowTouchMove]="false">
       <ng-template swiperSlide>
         <div class="swiper">
-          <ng-container *ngIf="clientes.length">
-            <ion-item-group *ngIf="let cliente of clientes">
-              <ion-item>
-                <ion-label position="floating">Cliente Cadastrado ? </ion-label>
-              </ion-item>
-              <ion-item>
-                <ion-select interface="action-sheet" placeholder="selecionar">
-                  <ion-select-option value="apples">Apples</ion-select-option>
-                  <ion-select-option value="oranges">Oranges</ion-select-option>
-                  <ion-select-option value="bananas">Bananas</ion-select-option>
-                </ion-select>
-              </ion-item>
-            </ion-item-group>
-          </ng-container>
-
           <ion-item-group>
             <ng-container formGroupName="dados_cliente">
+              <ion-item *ngIf="clientes.length && !venda">
+                <ion-label position="floating">Cliente cadastrado?</ion-label>
+
+                <ion-select (ionChange)="selecionarCliente()" interface="action-sheet" placeholder="Selecionar Cliente"
+                  formControlName="id_ref">
+                  <ion-select-option value="">
+                    novo cliente
+                  </ion-select-option>
+                  <ion-select-option *ngFor="let cliente of clientes" [value]="cliente.id_ref">
+                    {{cliente?.nome}}
+                  </ion-select-option>
+
+                </ion-select>
+              </ion-item>
               <ion-item>
                 <ion-label position="floating">Nome do Cliente: </ion-label>
                 <ion-input formControlName="nome"></ion-input>
@@ -88,7 +87,7 @@
             </ng-container>
             <ion-item>
               <ion-label position="floating">Data de Compra</ion-label>
-              <ion-datetime formControlName="data" class="ion-margin-top" locale="pt-Br" show-default-title="false">
+              <ion-datetime formControlName="data" class="ion-margin-top" locale="pt-Br" presentation="date" show-default-title="false">
               </ion-datetime>
             </ion-item>
           </ion-item-group>
@@ -135,6 +134,70 @@
         </div>
       </ng-template>
 
+      <ng-template swiperSlide>
+        <div class="swiper">
+          <ion-card>
+            <ion-card-header>
+              <ion-card-subtitle>DADOS PAGAMENTO</ion-card-subtitle>
+            </ion-card-header>
+
+            <ion-card-content>
+              <ion-item class="ion-no-padding">
+                <ion-select (ionChange)="selectParcelas($event)" interface="popover" placeholder="Selecione a quantidade de vezes">
+                  <ion-select-option *ngFor="let qtd of qtdParcelas" [value]="qtd">
+                    {{qtd}} vezes</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-card-content>
+          </ion-card>
+
+
+          <ng-container *ngIf="controlPagamento.length" formArrayName="dados_pagamento">
+            <ion-card *ngFor="let item of controlPagamento['controls']; let i = index" [formGroupName]="i">
+              <ion-card-header>
+                <ion-card-subtitle></ion-card-subtitle>
+                <ion-card-title>Parcela N.{{i+1}}</ion-card-title>
+              </ion-card-header>
+
+              <ion-card-content>
+                <ion-item hidden>
+                  <ion-input formControlName="parcela" [value]="i+1"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-text>
+                    <p>Previsão de Pagamento: {{controlPagamento.value?.data_pag}}</p>
+                  </ion-text>
+                </ion-item>
+
+                <ion-button (click)="openData(i, 'data_prev')" expand="block"> <ion-icon name="calendar-number-outline" slot="start"></ion-icon>  Selecionar Data</ion-button>
+                <ion-list>
+                  <ion-item-group>
+                    <ion-list-header>
+                      <ion-label>
+                        Status do Pagamento
+                      </ion-label>
+                    </ion-list-header>
+                    <ion-radio-group formControlName="status">
+                      <ion-item class="ion-no-padding">
+                        <ion-label>Pago</ion-label>
+                        <ion-radio color="success" value="true"></ion-radio>
+                      </ion-item>
+  
+                      <ion-item class="ion-no-padding">
+                        <ion-label>Não Pago</ion-label>
+                        <ion-radio color="danger" value="false"></ion-radio>
+                      </ion-item>
+                    </ion-radio-group>
+  
+                  </ion-item-group>
+
+                </ion-list>
+              </ion-card-content>
+            </ion-card>
+          </ng-container>
+        </div>
+      </ng-template>
+
     </swiper>
   </form>
 </ion-content>
@@ -166,13 +229,14 @@
           </ng-template>
         </ion-col>
         <ion-col size="6">
-          <ion-button *ngIf="sliderAtual !== (slidesLength-1) ; else btnFinalizar " (click)="controlSwiper('next')"
-            type="button" expand="block" color="primary">
+          <ion-button [disabled]="!controlNext()" *ngIf="sliderAtual !== (slidesLength-1) ; else btnFinalizar "
+            (click)="controlSwiper('next')" type="button" expand="block" color="primary">
             Próximo <ion-icon name="play-forward-outline" slot="end"></ion-icon>
           </ion-button>
           <ng-template #btnFinalizar>
-            <ion-button (click)="salvarCliente(); salvarVenda()" type="button" expand="block" color="primary">
-              Finalizar <ion-icon name="play-forward-outline" slot="end"></ion-icon>
+            <ion-button [disabled]="!controlNext()" (click)="alertConfirmar()" type="button" expand="block"
+              color="success">
+              Salvar <ion-icon name="save-outline" slot="end"></ion-icon>
             </ion-button>
           </ng-template>
         </ion-col>

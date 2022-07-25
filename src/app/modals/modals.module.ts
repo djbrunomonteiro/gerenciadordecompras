@@ -7,6 +7,8 @@ import { IonicModule } from '@ionic/angular';
 import { SwiperModule } from 'swiper/angular';
 import { VendaEditorComponent } from './vendas/venda-editor/venda-editor.component';
 
+import { DataPickerComponent } from './data-picker/data-picker.component';
+
 
 
 
@@ -14,7 +16,8 @@ import { VendaEditorComponent } from './vendas/venda-editor/venda-editor.compone
   declarations: [
     ComprasEditorComponent,
     ProdutoViewComponent,
-    VendaEditorComponent
+    VendaEditorComponent,
+    DataPickerComponent
   ],
   imports: [
     CommonModule,
@@ -25,7 +28,9 @@ import { VendaEditorComponent } from './vendas/venda-editor/venda-editor.compone
   ],
   exports:[
     ComprasEditorComponent,
-    ProdutoViewComponent
+    ProdutoViewComponent,
+    VendaEditorComponent,
+    DataPickerComponent
   ],
   providers: []
 })

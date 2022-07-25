@@ -1,17 +1,19 @@
-<ion-toolbar color="secondary">
-  <ion-buttons slot="start">
-    <ion-menu-button auto-hide="false"></ion-menu-button>
-  </ion-buttons>
-  <ion-buttons slot="primary">
-    <ion-button (click)="auth.logOut()">
-      <ion-icon slot="icon-only" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
-    </ion-button>
-  </ion-buttons>
+<ion-header collapse="fade">
+  <ion-toolbar color="secondary">
+    <ion-buttons slot="start">
+      <ion-menu-button auto-hide="false"></ion-menu-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-badge color="danger">11</ion-badge>
+      </ion-button>
+    </ion-buttons>
 
-  <ion-title class="ion-text-center">
-    <ion-icon name="heart-outline"></ion-icon> Paula Fabiana
-  </ion-title>
-</ion-toolbar>
+    <ion-title class="ion-text-center ion-padding">
+      <ion-icon name="heart-outline"></ion-icon> Paula Fabiana
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
 
 <ion-menu side="start" menuId="menu" contentId="main" class="my-custom-menu">
   <ion-header>

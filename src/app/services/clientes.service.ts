@@ -20,8 +20,6 @@ export class ClientesService {
   async addOne(item: any) {
     const clienteRef = collection(this.afs, 'clientes');
     const docRef = addDoc(clienteRef, item);
-    console.log('cliente,', item);
-    
     return (await docRef).id;
   }
 
@@ -35,9 +33,10 @@ export class ClientesService {
     return docData(docRef, { idField: 'id' }) as Observable<any[]>;
   }
 
-  updateOne(cliente: ICliente) {
+  async updateOne(cliente: ICliente) {
     const docRef = doc(this.afs, `clientes/${cliente.id}`);
-    return setDoc(docRef, cliente);
+    (await setDoc(docRef, cliente))
+    return docRef.id
   }
 
   deleteOne(id: string) {
